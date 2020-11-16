@@ -1,0 +1,121 @@
+import random
+#==========================================
+# Purpose: determines where the empty slots, '-', are in the list, board.
+# Input Parameter(s):
+#          board - a list with 'X', 'O', or '-'
+# Return Value(s): the index number of where '-' is located
+#==========================================
+def open_slots(board):
+    index=[]
+    for i in range(9):
+        if board[i]=='-':
+            index.append(i)
+    return index
+#==========================================
+# Purpose: determines the winner, between 'X' and 'O', or 'D' if all slots are
+#          filled and neither 'X' or 'O' won, or '-' if there is an empty slot
+#          and no one has won yet
+# Input Parameter(s):
+#          board - a list with 'X', 'O', or '-'
+# Return Value(s): 'X', 'O', 'D', '-' based on which condition is fulfilled first in the order of the statements
+#==========================================
+def winner(board):
+    x = [[],[],[]]
+    x[0] = [board[0], board[1], board[2]]
+    x[1] = [board[3], board[4], board[5]]
+    x[2] = [board[6], board[7], board[8]]
+    if x[0]==['X', 'X', 'X'] or x[1]==['X', 'X', 'X'] or x[2]==['X', 'X', 'X'] or (x[0][0]=='X' and x[1][1]=='X' and x[2][2]=='X') or (x[0][2]=='X' and x[1][1]=='X' and x[2][0]=='X'):
+        return 'X'
+    elif x[0]==['O', 'O', 'O'] or x[1]==['O', 'O', 'O'] or x[2]==['O', 'O', 'O'] or (x[0][0]=='O' and x[1][1]=='O' and x[2][2]=='O') or (x[0][2]=='O' and x[1][1]=='O' and x[2][0]=='O'):
+        return 'O'
+    elif (x[0][0]=='X' and x[1][0]=='X' and x[2][0]=='X') or (x[0][1]=='X' and x[1][1]=='X' and x[2][1]=='X') or (x[0][2]=='X' and x[1][2]=='X' and x[2][2]=='X'):
+        return 'X'
+    elif (x[0][0]=='O' and x[1][0]=='O' and x[2][0]=='O') or (x[0][1]=='O' and x[1][1]=='O' and x[2][1]=='O') or (x[0][2]=='O' and x[1][2]=='O' and x[2][2]=='O'):
+        return 'O'
+    elif x[0][0]=='-' or x[0][1]=='-' or x[0][2]=='-' or x[1][0]=='-' or x[1][1]=='-' or x[1][2]=='-' or x[2][0]=='-' or x[2][1]=='-' or x[2][2]=='-':
+        return '-'
+    else:
+        return 'D'
+#==========================================
+# Purpose: plays tic_tac_toe by itself and determines who won or if it was a draw.
+#          When it is O's turn, the force_win function is called to see which move
+#          will give us the lowest board value and then puts 'O' in that index that
+#          got us to that lowest board value.
+# Input Parameter(s): None
+# Return Value(s): the winner between 'X' and 'O' or 'D' for draw
+#==========================================
+def tic_tac_toe():
+    y = ['-', '-', '-', '-', '-', '-', '-', '-', '-']
+    index=open_slots(y)[0]
+    while winner(y)=='-':
+        i = random.choice(open_slots(y))
+        y[i]='X'
+        if winner(y)=='X' or winner(y)=='O' or winner(y)=='D':
+            return winner(y)
+        min1 = 1
+        for i in open_slots(y):
+            c=y[:]
+            c[i]='O'
+            x = force_win(c)
+            if x<min1:
+                min1=x
+                index=i
+            c[i]='-'
+        y[index]='O'
+    return winner(y)
+#==========================================
+# Purpose: determines how many times 'X', 'O', and 'D' won in the function of tic_tac_toe() by calling it n number of times 
+# Input Parameter(s):
+#          n - the number of rounds of tic tac toe
+# Return Value(s): None
+#==========================================
+def play_games(n):
+    xw=0
+    ow=0
+    dw=0
+    for i in range(n):
+        x = tic_tac_toe()
+        if x=='X':
+            xw+=1
+        elif x=='O':
+            ow+=1
+        else:
+            dw+=1
+    print("X wins:", xw)
+    print("O wins:", ow)
+    print("Draws:", dw)
+#==========================================
+# Purpose: determines the lowest or the highest board state depending on whether it is X's turn or O's turn.
+# Input Parameter(s):
+#          board - a nine element list containing 'X', 'O', or '-'
+# Return Value(s): returns 1 if X wins, -1 if O wins, 0 for draw. At the end, returns maximum of all
+#                  of these numbers if it is X's turn or returns mininum of all these numbers if it
+#                  is O's turn.
+#==========================================
+def force_win(board):
+    c = board[:]
+    if winner(board)!='-':
+        if winner(board)=='X':
+            return 1
+        if winner(board)=='O':
+            return -1
+        if winner(board)=='D':
+            return 0
+    elif len(open_slots(board))%2 == 1:
+        max1=-1
+        for i in open_slots(board):
+            c[i]='X'
+            x = force_win(c)
+            if x>max1:
+                max1=x
+            c[i]='-'
+        return max1
+    else:
+        min1 = 1
+        for i in open_slots(board):
+            c[i]='O'
+            x = force_win(c)
+            if x<min1:
+                min1=x
+            c[i]='-'
+        return min1
