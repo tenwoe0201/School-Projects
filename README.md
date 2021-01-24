@@ -12,3 +12,5 @@
   search_wolf: using states of the wolf, goat, cabbage, and the person to get them across the river safely following the rules. Multiple answers can be given using               exceptions. 
   
   qu_quiz.ml: adding "qu" to a workd and rescrambling to find a word from the dictionary. 
+  
+  Paradelle.ml: checking to see if the inputted file follows the rules of paradelle.
